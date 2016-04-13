@@ -39,6 +39,28 @@ print_words() and print_top().
 
 import sys
 
+def get_word_dic(filename):
+  f = open(filename, 'rU')
+  wdic = {}
+  for line in f:
+    for W in line.split():
+      w = W.lower()  
+      if w in wdic: wdic[w] += 1
+      else: wdic[w] = 1
+  return wdic
+
+def print_words(filename):
+  words = get_word_dic(filename)
+  for k in sorted(words.keys()):
+    print k, ' ', words[k]
+
+def print_top(filename):
+  words = get_word_dic(filename)
+  def last_in_tuple(t):
+    return t[-1]
+  for k, v in sorted(words.items(), key=last_in_tuple, reverse=True)[:20]:
+    print k, ' ', v
+
 # +++your code here+++
 # Define print_words(filename) and print_top(filename) functions.
 # You could write a helper utility function that reads a file

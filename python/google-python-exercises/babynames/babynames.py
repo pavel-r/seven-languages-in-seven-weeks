@@ -40,8 +40,25 @@ def extract_names(filename):
   followed by the name-rank strings in alphabetical order.
   ['2006', 'Aaliyah 91', Aaron 57', 'Abagail 895', ' ...]
   """
-  # +++your code here+++
-  return
+  f = open(filename, 'rU')
+  text = f.read()
+  f.close()
+  year = re.search(r'Popularity in (\d+)', text).group(1)
+  name_tuples = re.findall(r'<td>(\d+)</td><td>(\w+)</td><td>(\w+)</td>', text)
+  name_dic = {}
+
+  def add_to_name_dic(name, popularity):
+    if name in name_dic:
+      if popularity < name_dic[name]: name_dic[name] = popularity
+    else:
+      name_dic[name] = popularity
+
+  for name_tuple in name_tuples:
+    add_to_name_dic(name_tuple[1], name_tuple[0])
+    add_to_name_dic(name_tuple[2], name_tuple[0])
+
+  names_sorted = [year] + [name+' '+name_dic[name] for name in sorted(name_dic.keys())]
+  return names_sorted
 
 
 def main():
@@ -49,7 +66,7 @@ def main():
   # Make a list of command line arguments, omitting the [0] element
   # which is the script itself.
   args = sys.argv[1:]
-
+  
   if not args:
     print 'usage: [--summaryfile] file [file ...]'
     sys.exit(1)
@@ -60,9 +77,17 @@ def main():
     summary = True
     del args[0]
 
-  # +++your code here+++
   # For each filename, get the names, then either print the text output
   # or write it to a summary file
-  
+  for filename in args:
+    names_sorted = extract_names(filename)
+    out_text = '\n'.join(names_sorted) + '\n'
+    if summary:
+      f = open(filename + '.summary', 'w')
+      f.write(out_text)
+      f.close()
+    else:
+      print out_text 
+
 if __name__ == '__main__':
   main()

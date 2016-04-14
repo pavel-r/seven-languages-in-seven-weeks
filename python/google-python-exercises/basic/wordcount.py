@@ -47,6 +47,7 @@ def get_word_dic(filename):
       w = W.lower()  
       if w in wdic: wdic[w] += 1
       else: wdic[w] = 1
+  f.close()
   return wdic
 
 def print_words(filename):
